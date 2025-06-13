@@ -1,0 +1,42 @@
+let ai = document.querySelector(".virtual-assistent img")
+let speakpage = document.querySelector(".speak-page")
+let content = document.querySelector(".speak-page h1")
+let chatbox = document.querySelector(".chat-box")
+
+function speak(text) {
+    let text_speak = new SpeechSynthesisUtterance(text)
+    text_speak.rate = 1
+    text_speak.pitch = 1
+    text_speak.volume = 1
+    text_speak.lang = "hi-GB"
+    window.speechSynthesis.speak(text_speak)
+}
+
+let speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+let recognition = new speechRecognition()
+
+recognition.onresult = (event) => {
+    speakpage.style.display = "none"
+    let currentIndex = event.resultIndex
+    let transcript = event.results[currentIndex][0].transcript
+    content.innerText = transcript
+    takeCommand(transcript.toLowerCase())
+    console.log(event)
+}
+
+function takeCommand(message) {
+    console.log("Received message:", message); // Debugging line
+    if (message.includes("open") && message.includes("chat")) {
+        console.log("Command recognized: open chat"); // Debugging line
+        speak("ok sir")
+        chatbox.classList.add("active-chat-box")
+        console.log("Chatbox class list:", chatbox.classList); // Debugging line
+    } else {
+        console.log("Command not recognized"); // Debugging line
+    }
+}
+
+ai.addEventListener("click", () => {
+    recognition.start()
+    speakpage.classList.toggle("active-speak-page")
+})
